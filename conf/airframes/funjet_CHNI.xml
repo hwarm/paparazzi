@@ -69,6 +69,7 @@
    <load name="baro_ets.xml"/>
    <load name="airspeed_ets.xml"/>
    <load name="baro_bmp.xml"/>
+   <load name="openlog.xml"/>
   </modules>
 
 <!-- commands section -->
