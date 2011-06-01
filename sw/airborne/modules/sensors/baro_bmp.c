@@ -38,6 +38,9 @@
 #include "messages.h"
 #include "downlink.h"
 
+#include "subsystems/nav.h"
+#include "estimator.h"
+
 #ifndef DOWNLINK_DEVICE
 #define DOWNLINK_DEVICE DOWNLINK_AP_DEVICE
 #endif
@@ -51,12 +54,29 @@
 #endif
 
 #define BMP085_SLAVE_ADDR 0xEE
+#define BARO_BMP_OFFSET_NBSAMPLES_INIT 20
+#define BARO_BMP_OFFSET_NBSAMPLES_AVRG 40
+#define BARO_BMP_OFFSET_MAX 1000000
+#define BARO_BMP_OFFSET_MIN 10
+
+#define BARO_BMP_SCALE 0.032
 
 struct i2c_transaction bmp_trans;
 
 uint8_t  baro_bmp_status;
 uint32_t baro_bmp_pressure;
 uint16_t baro_bmp_temperature;
+
+// Global variables
+uint16_t baro_pressure;
+uint16_t baro_offset;
+bool_t baro_valid;
+float baro_altitude;
+
+// Local variables
+bool_t baro_offset_init;
+uint32_t baro_offset_tmp;
+uint16_t baro_cnt;
 
 int16_t  bmp_ac1, bmp_ac2, bmp_ac3;
 uint16_t bmp_ac4, bmp_ac5, bmp_ac6;
@@ -65,6 +85,13 @@ int16_t  bmp_mb, bmp_mc, bmp_md;
 int32_t  bmp_up, bmp_ut;
 
 void baro_bmp_init( void ) {
+  baro_pressure = 0;
+  baro_altitude = 0.0;
+  baro_offset = 0;
+  baro_offset_tmp = 0;
+  baro_valid = TRUE;
+  baro_offset_init = FALSE;
+  baro_cnt = BARO_BMP_OFFSET_NBSAMPLES_INIT + BARO_BMP_OFFSET_NBSAMPLES_AVRG;
   baro_bmp_status = BARO_BMP_UNINIT;
   /* read calibration values */
   bmp_trans.buf[0] = BMP085_EEPROM_AC1;
@@ -168,6 +195,53 @@ void baro_bmp_event( void ) {
 #ifdef SENSOR_SYNC_SEND
       DOWNLINK_SEND_BMP_STATUS(DefaultChannel, &bmp_p, &bmp_t);
 #endif
+      baro_bmp_update_altitude (baro_bmp_pressure);
     }
   }
+}
+
+void baro_bmp_update_altitude (int32_t  pressure) {
+  // Get pressure
+  baro_pressure = (uint16_t)pressure;
+  // Check if this is valid altimeter
+  if (baro_pressure == 0)
+    baro_valid = FALSE;
+  else
+    baro_valid = TRUE;
+
+  // Continue only if a new altimeter value was received
+  if (baro_valid) {
+    // Calculate offset average if not done already
+    if (!baro_offset_init) {
+      --baro_cnt;
+      // Check if averaging completed
+      if (baro_cnt == 0) {
+        // Calculate average
+        baro_offset = (uint16_t)(baro_offset_tmp / BARO_BMP_OFFSET_NBSAMPLES_AVRG);
+        // Limit offset
+        if (baro_offset < BARO_BMP_OFFSET_MIN)
+          baro_offset = BARO_BMP_OFFSET_MIN;
+        if (baro_offset > BARO_BMP_OFFSET_MAX)
+          baro_offset = BARO_BMP_OFFSET_MAX;
+        baro_offset_init = TRUE;
+      }
+      // Check if averaging needs to continue
+      else if (baro_cnt <= BARO_BMP_OFFSET_NBSAMPLES_AVRG)
+        baro_offset_tmp += baro_pressure;
+    }
+    // Convert raw to m/s
+    if (baro_offset_init) {
+      baro_altitude = ground_alt + BARO_BMP_SCALE * (float)(baro_offset-baro_pressure);
+      DOWNLINK_SEND_BARO_ALT(DefaultChannel, &baro_pressure, &baro_offset, &baro_altitude);
+      // New value available
+      EstimatorSetAlt(baro_altitude);
+    } else {
+      baro_altitude = 0.0;
+    }
+  } else {
+    baro_altitude = 0.0;
+  }
+
+  // Transaction has been read
+  baro_ets_i2c_trans.status = I2CTransDone;
 }

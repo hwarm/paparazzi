@@ -41,5 +41,6 @@ extern uint16_t baro_bmp_temperature;
 void baro_bmp_init(void);
 void baro_bmp_periodic(void);
 void baro_bmp_event(void);
+void baro_bmp_update_altitude(int32_t);
 
 #endif

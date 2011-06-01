@@ -162,6 +162,8 @@
   
   <section name="SIMU">
     <define name="JSBSIM_MODEL" value="&quot;Malolo1&quot;"/>
+    <define name="JSBSIM_INIT"  value="&quot;Malolo1-IC&quot;"/>
+    <define name="JSBSIM_LAUNCHSPEED"   value="15.0"/>
     <define name="JSBSIM_IR_ROLL_NEUTRAL" value="RadOfDeg(0.)"/>
     <define name="JSBSIM_IR_PITCH_NEUTRAL" value="RadOfDeg(0.)"/>
   </section>
@@ -199,5 +201,10 @@
     <target name="usb_tunnel_1"     board="tiny_1.1" />
     <target name="setup_actuators"  board="tiny_1.1" />
   </firmware>
+
+  <makefile location="after">
+	jsbsim.CFLAGS += -I/opt/jsbsim/include/JSBSim/
+	jsbsim.LDFLAGS += -L/opt/jsbsim/lib
+  </makefile>
 
 </airframe>

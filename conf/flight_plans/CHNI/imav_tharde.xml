@@ -1,0 +1,113 @@
+<!DOCTYPE flight_plan SYSTEM "flight_plan.dtd">
+
+<flight_plan alt="50" ground_alt="9" lat0="52.3824" lon0="5.897469" max_dist_from_home="1000" name="Stieglitz Versatile" qfu="270" security_height="60">
+  <header>
+	#include "datalink.h"
+</header>
+  <waypoints>
+    <waypoint name="HOME" x="-1.8" y="21.3"/>
+    <waypoint alt="70.0" name="STDBY" x="145.9" y="4.7"/>
+    <waypoint alt="70.0" name="1" x="25.4" y="-76.9"/>
+    <waypoint alt="70.0" name="2" x="218.9" y="106.7"/>
+    <waypoint alt="40.0" name="L1" x="111.9" y="-79.9"/>
+    <waypoint alt="20.0" name="L2" x="171.9" y="-25.5"/>
+    <waypoint alt="20.0" name="L3" x="211.0" y="18.9"/>
+    <waypoint alt="40.0" name="L4" x="233.5" y="51.5"/>
+    <waypoint alt="70.0" name="S1" x="-229.8" y="-240.8"/>
+    <waypoint alt="70.0" name="S2" x="-11.8" y="147.3"/>
+    <waypoint alt="30.0" name="AF" x="68.8" y="125.9"/>
+    <waypoint alt="30.0" name="TOD" x="93.0" y="111.3"/>
+    <waypoint alt="0.0" name="TD" x="-44.3" y="-40.3"/>
+    <waypoint name="BASELEG" x="26.9" y="-23.0"/>
+    <waypoint name="CLIMB" x="175.1" y="58.1"/>
+  </waypoints>
+  <sectors/>
+  <exceptions/>
+  <blocks>
+    <block name="Wait GPS">
+      <set value="1" var="kill_throttle"/>
+      <while cond="!GpsFixValid()"/>
+    </block>
+    <block name="Geo init">
+      <while cond="LessThan(NavBlockTime(), 10)"/>
+      <call fun="NavSetGroundReferenceHere()"/>
+    </block>
+    <block name="Holding point">
+      <set value="1" var="kill_throttle"/>
+      <attitude roll="0" throttle="0" vmode="throttle"/>
+    </block>
+    <block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
+      <exception cond="estimator_z > ground_alt+25" deroute="Standby"/>
+      <set value="0" var="kill_throttle"/>
+      <go wp="CLIMB"/>
+    </block>
+    <block name="Standby" strip_button="Standby" strip_icon="home.png">
+      <circle alt="100" radius="nav_radius" wp="STDBY"/>
+    </block>
+    <block name="Oval 1-2" strip_button="Oval (wp 1-2)" strip_icon="oval.png">
+      <exception cond="datalink_time > 22" deroute="Standby"/>
+      <exception cond="97>vsupply" deroute="Standby"/>
+      <oval p1="1" p2="2" radius="nav_radius"/>
+    </block>
+    <block name="Survey S1-S2" strip_button="Survey (wp S1-S2)" strip_icon="survey.png">
+      <survey_rectangle grid="50" wp1="S1" wp2="S2"/>
+    </block>
+    <block name="Land Right AF-TD" strip_button="Land right (wp AF-TD)" strip_icon="land-right.png">
+      <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
+      <deroute block="land"/>
+    </block>
+    <block name="Land Left AF-TD" strip_button="Land left (wp AF-TD)" strip_icon="land-left.png">
+      <set value="-DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
+      <deroute block="land"/>
+    </block>
+    <block name="land">
+      <call fun="nav_compute_baseleg(WP_AF, WP_TD, WP_BASELEG, nav_radius)"/>
+      <circle radius="nav_radius" until="NavCircleCount() > 0.5" wp="BASELEG"/>
+      <set value="V_CTL_AUTO_THROTTLE_MIN_CRUISE_THROTTLE" var="v_ctl_auto_throttle_cruise_throttle"/>
+      <circle radius="nav_radius" until="NavQdrCloseTo(DegOfRad(baseleg_out_qdr)-10) && 10 > fabs(estimator_z - WaypointAlt(WP_BASELEG))" wp="BASELEG"/>
+    </block>
+    <block name="final">
+      <exception cond="ground_alt + 10 > estimator_z" deroute="flare"/>
+      <go from="AF" hmode="route" vmode="glide" wp="TD"/>
+    </block>
+    <block name="flare">
+      <go approaching_time="0" from="AF" hmode="route" pitch="0" throttle="0.0" vmode="throttle" wp="TD"/>
+      <attitude pitch="30" roll="0.0" throttle="0.0" until="FALSE" vmode="throttle"/>
+    </block>
+    <block name="Land Left AF-TD (w)">
+      <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
+      <deroute block="land (w)"/>
+    </block>
+    <block name="land (w)">
+      <call fun="nav_compute_baseleg(WP_AF, WP_TD, WP_BASELEG, nav_radius)"/>
+      <circle radius="nav_radius" until="NavCircleCount() > 0.5" wp="BASELEG"/>
+      <set value="V_CTL_AUTO_THROTTLE_MIN_CRUISE_THROTTLE" var="v_ctl_auto_throttle_cruise_throttle"/>
+      <circle radius="nav_radius" until="NavQdrCloseTo(DegOfRad(baseleg_out_qdr)-10) && 10 > fabs(estimator_z - WaypointAlt(WP_BASELEG))" wp="BASELEG"/>
+    </block>
+    <block name="final (w)">
+      <exception cond="ground_alt + 10 > estimator_z" deroute="flare (w)"/>
+      <call fun="compute_TOD(WP_AF, WP_TD, WP_TOD, GLIDE_AIRSPEED, GLIDE_VSPEED)"/>
+      <go approaching_time="0" from="AF" hmode="route" wp="TOD"/>
+      <go from="TOD" hmode="route" pitch="stage_time*(GLIDE_PITCH/3)" throttle="0" vmode="throttle" wp="TD"/>
+    </block>
+    <block name="flare (w)">
+      <go from="TOD" hmode="route" pitch="stage_time*(GLIDE_PITCH/3)" throttle="0" vmode="throttle" wp="TD"/>
+      <attitude pitch="GLIDE_PITCH" roll="0.0" throttle="0.0" until="FALSE" vmode="throttle"/>
+    </block>
+    <block name="approach low" strip_button="Simulate Arch" strip_icon="eight.png">
+      <call fun="nav_compute_baseleg(WP_L1, WP_L2, WP_BASELEG, nav_radius)"/>
+      <circle radius="nav_radius" until="NavCircleCount() > 0.5" wp="BASELEG"/>
+      <set value="V_CTL_AUTO_THROTTLE_MIN_CRUISE_THROTTLE" var="v_ctl_auto_throttle_cruise_throttle"/>
+      <circle radius="nav_radius" until="NavQdrCloseTo(DegOfRad(baseleg_out_qdr)-10) && 10 > fabs(estimator_z - WaypointAlt(WP_BASELEG))" wp="BASELEG"/>
+      <deroute block="low pass"/>
+    </block>
+    <block name="low pass">
+      <go from="L1" hmode="route" vmode="alt" wp="L2"/>
+      <go from="L2" hmode="route" vmode="alt" wp="L3"/>
+      <go from="L3" hmode="route" vmode="alt" wp="L4"/>
+      <call fun="nav_compute_baseleg(WP_L4, WP_L1, WP_BASELEG, nav_radius)"/>
+      <circle radius="-DEFAULT_CIRCLE_RADIUS" until="NavCircleCount() > 0.5" wp="BASELEG"/>
+      <deroute block="approach low"/>
+    </block>
+  </blocks>
+</flight_plan>

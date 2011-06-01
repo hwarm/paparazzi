@@ -213,8 +213,8 @@
 # Config for SITL simulation with JSBSim
 include $(PAPARAZZI_SRC)/conf/autopilot/sitl_jsbsim.makefile
 
-sim.CFLAGS += -I/home/cocoleon/usr/include/JSBSim
-sim.LDFLAGS += -L/home/cocoleon/usr/lib/
+sim.CFLAGS += -I/opt/include/JSBSim
+sim.LDFLAGS += -L/opt/lib/
 
 sim.CFLAGS += -DBOARD_CONFIG=\"tiny.h\" -DAGR_CLIMB -DLOITER_TRIM -DALT_KALMAN
 sim.srcs += subsystems/navigation/nav_line.c subsystems/navigation/nav_survey_rectangle.c

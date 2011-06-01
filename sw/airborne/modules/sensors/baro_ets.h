@@ -38,6 +38,7 @@
 #ifndef BARO_ETS_H
 #define BARO_ETS_H
 
+#include "mcu_periph/uart.h"
 #include "std.h"
 #include "mcu_periph/i2c.h"
 

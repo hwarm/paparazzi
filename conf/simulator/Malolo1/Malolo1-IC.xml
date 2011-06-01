@@ -42,7 +42,7 @@
   <phi 			unit="DEG">		0.0 		</phi> <!-- roll -->
 <!-- Wind -->
   <winddir 		unit="DEG">		0.0 		</winddir> <!-- positive velocity direction (0.0 is wind from south) -->
-  <vwind 		unit="KTS">		20.0 		</vwind>
+  <vwind 		unit="KTS">		0.0 		</vwind>
 <!--Do not modify-->
   <vground		unit="KTS">		0.0		</vground> <!-- ground speed -->
   <running>						-1		</running> <!-- set all engines running -->

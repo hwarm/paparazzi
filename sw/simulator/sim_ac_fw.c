@@ -128,7 +128,7 @@ void copy_inputs_to_jsbsim(FGFDMExec* FDMExec) {
   static double throttle_slewed = 0.;
   static double th = 0.;
 #ifndef JSBSIM_LAUNCHSPEED
-#define JSBSIM_LAUNCHSPEED 20.0 //launch speed in m/s aligned with airframe body forward
+#define JSBSIM_LAUNCHSPEED 10.0 //launch speed in m/s aligned with airframe body forward
 #endif
   if (run_model) th += 0.01;
   if (th >= 1) th = 1;

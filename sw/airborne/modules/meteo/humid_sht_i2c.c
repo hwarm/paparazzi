@@ -39,6 +39,10 @@
 #define SHT_I2C_DEV i2c0
 #endif
 
+#ifndef DOWNLINK_DEVICE
+#define DOWNLINK_DEVICE DOWNLINK_AP_DEVICE
+#endif
+
 #define SHT_SLAVE_ADDR 0x80
 
 struct i2c_transaction sht_trans;

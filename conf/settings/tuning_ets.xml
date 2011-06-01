@@ -1,0 +1,16 @@
+<!DOCTYPE settings SYSTEM "settings.dtd">
+
+<!-- Airspeed Tuning -->
+
+<settings>
+  <dl_settings>
+      <dl_settings NAME="airspeed">
+        <dl_setting MAX="40." MIN="2" STEP="1" VAR="v_ctl_auto_airspeed_setpoint" shortname="Airspeed Setpoint"param="AUTO_AIRSPEED_SETPOINT"/>
+        <dl_setting MAX="0.1" MIN="0.01" STEP="0.01" VAR="v_ctl_auto_airspeed_pgain" shortname="Airspeed PGAIN" param="AUTO_AIRSPEED_PGAIN" />
+        <dl_setting MAX="0.1" MIN="0.01" STEP="0.01" VAR="v_ctl_auto_airspeed_igain" shortname="Airspeed IGAIN" param="AUTO_AIRSPEED_IGAIN" />
+        <dl_setting MAX="40." MIN="2" STEP="1" VAR="v_ctl_auto_groundspeed_setpoint" shortname="Groundspeed Setpoint" param="AUTO_GROUNDSPEED_SETPOINT" />
+        <dl_setting MAX="2" MIN="0" STEP="0.1" VAR="v_ctl_auto_groundspeed_pgain" shortname="Groundspeed PGAIN"param="AUTO_GROUNDSPEED_PGAIN" />
+        <dl_setting MAX="2" MIN="0" STEP="0.1" VAR="v_ctl_auto_groundspeed_igain" shortname="Groundspeed IGAIN" param="AUTO_GROUNDSPEED_IGAIN" />
+       </dl_settings>
+  </dl_settings>
+</settings>

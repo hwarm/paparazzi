@@ -419,8 +419,8 @@
   </message>
 
  <message name="BARO_ETS" id="56">
-   <field name="adc" type="uint16"/>
-   <field name="offset" type="uint16"/>
+   <field name="adc" type="uint32"/>
+   <field name="offset" type="uint32"/>
    <field name="scaled" type="float"/>
  </message>
 
@@ -742,7 +742,11 @@
     <field name="one" type="float"/>
   </message>
 
- <!--113 is free -->
+  <message name="BARO_ALT" id="113">   
+   <field name="adc" type="uint16"/>
+   <field name="offset" type="uint32"/>
+   <field name="scaled" type="float"/>
+  </message>
 
   <message name="PAYLOAD" id="114">
     <field name="values" type="uint8[]" unit="none"/>

@@ -13,32 +13,8 @@
 
 <airframe name="Reely Condor CHNI">
 
-  <!-- modules -->
-  <modules>
-    <!--<load name="humid_sht_i2c.xml"/>
-    <load name="windturbine.xml"/>
-    <load name="dust_gp2y.xml"/>
-    <load name="light_temt.xml"/>
-    <load name="temp_temod.xml"/>
-    <load name="adc_generic.xml"/>
-    <load name="trig_test.xml"/>
-    <load name="airspeed_ets.xml"/>
-    <load name="alt_srf08.xml"/>
-    <load name="mag_micromag_fw.xml"/>
-    <load name="baro_bmp.xml"/>
-    <load name="baro_scp.xml"/>
-    <load name="humid_hih.xml"/>
-    <load name="temp_tmp102.xml"/>
-    <load name="temp_lm75.xml"/>
-    <load name="ir_mlx.xml"/>
-    <load name="humid_dpicco.xml"/>
-    <load name="humid_sht.xml"/>
-    <load name="baro_MS5534A.xml"/>
-    <load name="baro_scp_i2c.xml"/-->
-  </modules>
-
   <servos>
-    <servo name="THROTTLE" no="0" min="1200" neutral="1200" max="2000"/>
+    <servo name="THROTTLE"   no="7" min="1200" neutral="1200" max="2000"/>
     <servo name="AILERON" no="4" max="2000" neutral="1500" min="1000"/>
     <servo name="ELEVATOR" no="3" max="2000" neutral="1500" min="1000"/>
     <servo name="CAM" no="2" max="2000" neutral="1500" min="1000"/>
@@ -74,9 +50,9 @@
     <define name="GYRO_Q_SENS" value="57.96" integer="16"/><!-- Pitch -->
     <define name="GYRO_R_SENS" value="60.1" integer="16"/><!-- Yaw -->
 
-    <define name="GYRO_P_SIGN" value="1"/>
-    <define name="GYRO_Q_SIGN" value="-1"/>
-    <define name="GYRO_R_SIGN" value="-1"/>
+    <define name="GYRO_P_SIGN" value="1" />
+    <define name="GYRO_Q_SIGN" value="-1" />
+    <define name="GYRO_R_SIGN" value="-1" />
 
     <define name="ACCEL_X_SENS" value="111.0" integer="16"/>
     <define name="ACCEL_Y_SENS" value="119.0" integer="16"/>
@@ -96,9 +72,9 @@
     <define name="MAG_Y_NEUTRAL" value="512"/>
     <define name="MAG_Z_NEUTRAL" value="512"/>
 
-    <define name="BODY_TO_IMU_PHI" value="RadOfDeg(0.)"/>
-    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(0.)"/>
-    <define name="BODY_TO_IMU_PSI" value="RadOfDeg(0.)"/>
+    <define name="BODY_TO_IMU_PHI" value="RadOfDeg(0.)" />
+    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(0.)" />
+    <define name="BODY_TO_IMU_PSI" value="RadOfDeg(0.)" />
   </section>
 
   <section name="AUTO1" prefix="AUTO1_">
@@ -109,8 +85,8 @@
   <!-- Configure the pinning of the ADC -->
 
   <section name="adc" prefix="ADC_CHANNEL_">
-    <define name="GYRO_NB_SAMPLES" value="16"/>
-    <define name="ACCEL_NB_SAMPLES" value="32"/>
+    <define name="GYRO_NB_SAMPLES" value="16" />
+    <define name="ACCEL_NB_SAMPLES" value="32" />
   </section>
 
   <!-- settings for the Analog IMU -->
@@ -122,10 +98,10 @@
 
   <!-- 3S LiPo with 1050mAh, connected to an 20A ESC -->
   <section name="BAT">
-   <define name="MILLIAMP_AT_FULL_THROTTLE" value="20000" unit="mA"/>
+   <define name="MILLIAMP_AT_FULL_THROTTLE" value="20000" unit="mA" />
    <define name="VOLTAGE_ADC_A" value="0.02456533604651162791"/>
    <define name="VOLTAGE_ADC_B" value="0.24024993023255813953"/>
-   <define name="VoltageOfAdc(adc)" value="(VOLTAGE_ADC_A * adc + VOLTAGE_ADC_B)"/>
+   <define name="VoltageOfAdc(adc)" value ="(VOLTAGE_ADC_A * adc + VOLTAGE_ADC_B)"/>
    <define name="CATASTROPHIC_BAT_LEVEL" value="9.0" unit="V"/>
    <define name="CRITIC_BAT_LEVEL" value="9.3" unit="V"/>
    <define name="LOW_BAT_LEVEL" value="10.5" unit="V"/>
@@ -195,12 +171,7 @@
   <section name="NAV">
     <define name="NAV_PITCH" value="0."/>
     <define name="NAV_GLIDE_PITCH_TRIM" value="0"/>
-    <define name="NAV_SURVEY_SHIFT" value="50." unit="m"/>
-    <!-- Parameters for Auto Land -->
-    <define name="GLIDE_PITCH" value="45" unit="deg"/>
-    <define name="GLIDE_AIRSPEED" value="8.0" unit="m/s"/>
-    <define name="GLIDE_VSPEED" value="2.0" unit="m/s"/>
-
+    <define name="NAV_SURVEY_SHIFT" value="65" unit="m"/>
   </section>
 
   <section name="AGGRESSIVE" prefix="AGR_">
@@ -223,27 +194,26 @@
   </section>
 
   <firmware name="fixedwing">
-    <target name="sim" board="pc"/>
-    <target name="ap" board="twog_1.0">
-      <define name="AGR_CLIMB"/>
-      <define name="LOITER_TRIM"/>
-      <define name="ALT_KALMAN"/>
-      <define name="USE_I2C0"/>
+    <target name="sim"          board="pc"/>
+    <target name="ap"           board="twog_1.0">
+      <define name="AGR_CLIMB" />
+      <define name="LOITER_TRIM" />
+      <define name="ALT_KALMAN" />
       <define name="SENSOR_SYNC_SEND"/>
       <define name="SET_IMU_ZERO_ON_STARTUP"/>
       <!--has to be set if SET_IMU_ZERO ON STARTUP IS SET-->
       <!--this is the ADC-Value, measured for the Z-Accelelerometer if the Plane is standing -->
       <define name="ACCEL_Z_GRAVITY" value="96"/>
     </target>
-    <subsystem name="radio_control" type="ppm"/>
+    <subsystem name="radio_control"     type="ppm"/>
     <!-- Communication -->
-    <subsystem name="telemetry" type="transparent">
-      <configure name="MODEM_BAUD" value="B57600"/>
+    <subsystem name="telemetry"     type="transparent">
+      <configure name="MODEM_BAUD"      value="B57600"/>
     </subsystem>
     <!-- Actuators are automatically chosen according to the board-->
     <subsystem name="control"/>
     <!-- Sensors -->
-    <subsystem name="imu" type="analog">
+    <subsystem name="imu"       type="analog">
       <configure name="GYRO_P" value="ADC_1"/>
       <configure name="GYRO_Q" value="ADC_0"/>
       <configure name="GYRO_R" value="ADC_2"/>
@@ -252,15 +222,12 @@
       <configure name="ACCEL_Z" value="ADC_3"/>
     </subsystem>
 
-    <subsystem name="attitude" type="dcm"/>
-    <subsystem name="gps" type="ublox_lea5h"/>
+    <subsystem name="attitude"  type="dcm"/>
+    <subsystem name="gps"       type="ublox_lea5h"/>
     <subsystem name="navigation"/>
-    <!-- Interfaces -->
-    <subsystem name="i2c"/>
   </firmware>
   <makefile location="after">            
       ap.CFLAGS += -DWIND_INFO -DSTRONG_WIND
-      ap.CFLAGS += -DUSE_I2C0 -DUSE_BARO_BMP -DBARO_BMP_ACCEL
 
       sim.CFLAGS += -DWIND_INFO -DSTRONG_WIND
   </makefile>

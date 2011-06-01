@@ -1,6 +1,9 @@
 <!DOCTYPE flight_plan SYSTEM "../flight_plan.dtd">
 
-<flight_plan alt="80" ground_alt="9" lat0="52.897800" lon0="9.266611" max_dist_from_home="400" name="Ahnebergen Versatile" qfu="270" security_height="50">
+<flight_plan alt="80" ground_alt="9" lat0="52.897800" lon0="9.266611" max_dist_from_home="500" name="Ahnebergen Versatile" qfu="270" security_height="50">  
+  <header>
+	#include "datalink.h"
+  </header>
   <waypoints>
     <waypoint name="HOME" x="85.8" y="35.6"/>
     <waypoint name="STDBY" x="99.8" y="10.3"/>
@@ -35,12 +38,14 @@
       <go wp="CLIMB"/>
     </block>
     <block name="Standby" strip_button="Standby" strip_icon="home.png">
-      <circle radius="nav_radius" wp="STDBY"/>
+      <circle radius="nav_radius" wp="STDBY" alt="100"/>
     </block>
     <block name="Figure 8 around wp 1" strip_button="Figure 8 (wp 1-2)" strip_icon="eight.png">
       <eight center="1" radius="nav_radius" turn_around="2"/>
     </block>
     <block name="Oval 1-2" strip_button="Oval (wp 1-2)" strip_icon="oval.png">
+      <exception cond="datalink_time > 22" deroute="Standby"/>
+      <exception cond="103>vsupply" deroute="Standby"/>
       <oval p1="1" p2="2" radius="nav_radius"/>
     </block>
     <block name="MOB" strip_button="Turn around here" strip_icon="mob.png">
@@ -138,5 +143,12 @@
       </for>
       <deroute block="Standby"/>
     </block>
+    <block name="hoch fliegen">
+      <exception cond="datalink_time > 22" deroute="Standby"/>
+      <exception cond="106>vsupply" deroute="Standby"/>
+      <circle radius="nav_radius" wp="STDBY"/>
+      <deroute block="Standby"/>
+    </block>
+
   </blocks>
 </flight_plan>
