@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ -f openlog2tlm ]
+  then
+  if [ -z $1 ]
+    then
+      echo "You have to supply the name of the file to fetch!"
+    else
+      target=`echo "$1.TLM"`
+      echo "Starting to fetch $1 writing tlm to $target"
+      ./openlog2tlm $1 $target
+      if [ $? -ne 0 ]
+      then
+	  exit 1
+      fi
+      ./sd2log $target
+      rm $target
+    fi
+  else
+    echo "openlog2tlm binary not found. 
+You have to run \"make openlog2tlm\""
+fi
