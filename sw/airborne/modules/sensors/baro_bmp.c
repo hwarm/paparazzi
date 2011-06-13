@@ -59,7 +59,7 @@
 #define BARO_BMP_OFFSET_MAX 1000000
 #define BARO_BMP_OFFSET_MIN 10
 
-#define BARO_BMP_SCALE 0.032
+#define BARO_BMP_SCALE 0.081193 // approx scale from Pa to m
 
 struct i2c_transaction bmp_trans;
 
@@ -68,8 +68,8 @@ uint32_t baro_bmp_pressure;
 uint16_t baro_bmp_temperature;
 
 // Global variables
-uint16_t baro_pressure;
-uint16_t baro_offset;
+int32_t baro_pressure;
+int32_t baro_offset;
 bool_t baro_valid;
 float baro_altitude;
 
@@ -195,14 +195,16 @@ void baro_bmp_event( void ) {
 #ifdef SENSOR_SYNC_SEND
       DOWNLINK_SEND_BMP_STATUS(DefaultChannel, &bmp_p, &bmp_t);
 #endif
+#ifdef USE_BARO_BMP
       baro_bmp_update_altitude (baro_bmp_pressure);
+#endif
     }
   }
 }
 
 void baro_bmp_update_altitude (int32_t  pressure) {
   // Get pressure
-  baro_pressure = (uint16_t)pressure;
+  baro_pressure = (int32_t)pressure;
   // Check if this is valid altimeter
   if (baro_pressure == 0)
     baro_valid = FALSE;
@@ -217,7 +219,7 @@ void baro_bmp_update_altitude (int32_t  pressure) {
       // Check if averaging completed
       if (baro_cnt == 0) {
         // Calculate average
-        baro_offset = (uint16_t)(baro_offset_tmp / BARO_BMP_OFFSET_NBSAMPLES_AVRG);
+        baro_offset = (int32_t)(baro_offset_tmp / BARO_BMP_OFFSET_NBSAMPLES_AVRG);
         // Limit offset
         if (baro_offset < BARO_BMP_OFFSET_MIN)
           baro_offset = BARO_BMP_OFFSET_MIN;
@@ -231,7 +233,7 @@ void baro_bmp_update_altitude (int32_t  pressure) {
     }
     // Convert raw to m/s
     if (baro_offset_init) {
-      baro_altitude = ground_alt + BARO_BMP_SCALE * (float)(baro_offset-baro_pressure);
+      baro_altitude = /*ground_alt + ((baro_altitude*4)+(1**/BARO_BMP_SCALE * (float)(baro_offset-baro_pressure)/*))/5*/;
       DOWNLINK_SEND_BARO_ALT(DefaultChannel, &baro_pressure, &baro_offset, &baro_altitude);
       // New value available
       EstimatorSetAlt(baro_altitude);
@@ -243,5 +245,4 @@ void baro_bmp_update_altitude (int32_t  pressure) {
   }
 
   // Transaction has been read
-  baro_ets_i2c_trans.status = I2CTransDone;
 }

@@ -745,8 +745,8 @@
   </message>
 
   <message name="BARO_ALT" id="113">   
-   <field name="adc" type="uint16"/>
-   <field name="offset" type="uint32"/>
+   <field name="adc" type="int32"/>
+   <field name="offset" type="int32"/>
    <field name="scaled" type="float"/>
   </message>
 

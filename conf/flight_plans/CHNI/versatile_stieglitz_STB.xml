@@ -6,7 +6,7 @@
 </header>
   <waypoints>
     <waypoint name="HOME" x="-129.1" y="-2.2"/>
-    <waypoint alt="70.0" name="STDBY" x="-17.1" y="126.0"/>
+    <waypoint alt="70.0" name="STDBY" x="-15.3" y="102.2"/>
     <waypoint alt="70.0" name="1" x="-126.6" y="-44.1"/>
     <waypoint alt="70.0" name="2" x="-56.8" y="81.4"/>
     <waypoint alt="40.0" name="L1" x="-84.0" y="-55.4"/>
@@ -15,11 +15,13 @@
     <waypoint alt="40.0" name="L4" x="5.5" y="67.0"/>
     <waypoint alt="70.0" name="S1" x="-235.3" y="-134.7"/>
     <waypoint alt="70.0" name="S2" x="-25.4" y="98.8"/>
-    <waypoint alt="30.0" name="AF" x="-60.4" y="-89.5"/>
+    <waypoint alt="30.0" name="AF" x="32.0" y="133.6"/>
+    <waypoint alt="30.0" name="AFL" x="-3.4" y="-106.4"/>
     <waypoint alt="30.0" name="TOD" x="93.0" y="111.3"/>
-    <waypoint alt="0.0" name="TD" x="-11.1" y="-3.6"/>
+    <waypoint alt="0.0" name="TD" x="-21.6" y="-7.6"/>
+    <waypoint alt="0.0" name="TDL" x="-57.2" y="-114.6"/>
     <waypoint name="BASELEG" x="26.9" y="-23.0"/>
-    <waypoint name="CLIMB" x="9.6" y="112.5"/>
+    <waypoint name="CLIMB" x="-61.9" y="39.1"/>
   </waypoints>
   <sectors/>
   <exceptions/>
@@ -42,10 +44,12 @@
       <go wp="CLIMB"/>
     </block>
     <block name="Standby" strip_button="Standby" strip_icon="home.png">
-      <circle alt="100" radius="nav_radius" wp="STDBY"/>
+      <circle alt="65" radius="nav_radius" wp="STDBY"/>
     </block>
-    <block name="75%" strip_button="75%">
-      <circle radius="nav_radius" throttle="v_ctl_auto_throttle_cruise_throttle" vmode="throttle" wp="STDBY"/>
+    <block name="Standby hoch">
+      <exception cond="datalink_time > 22" deroute="Standby"/>
+      <exception cond="100>vsupply" deroute="Standby"/>
+      <circle radius="nav_radius" wp="STDBY"/>
     </block>
     <block name="acrobatic roll" strip_button="rolle">
       <while cond="TRUE">
@@ -58,8 +62,6 @@
       <eight center="1" radius="nav_radius" turn_around="2"/>
     </block>
     <block name="Oval 1-2" strip_button="Oval (wp 1-2)" strip_icon="oval.png">
-      <exception cond="datalink_time > 22" deroute="Standby"/>
-      <exception cond="97>vsupply" deroute="Standby"/>
       <oval p1="1" p2="2" radius="nav_radius"/>
     </block>
     <block name="Auto pitch (circle wp 1)">
@@ -119,11 +121,29 @@
       <circle radius="nav_radius" until="NavQdrCloseTo(DegOfRad(baseleg_out_qdr)-10) && 10 > fabs(estimator_z - WaypointAlt(WP_BASELEG))" wp="BASELEG"/>
     </block>
     <block name="final">
-      <exception cond="ground_alt + 12 > estimator_z" deroute="flare"/>
+      <exception cond="ground_alt + 10 > estimator_z" deroute="flare"/>
       <go from="AF" hmode="route" vmode="glide" wp="TD"/>
     </block>
     <block name="flare">
-      <go approaching_time="0" from="AF" hmode="route" pitch="stage_time*(30/4)" throttle="0.0" vmode="throttle" wp="TD"/>
+      <go approaching_time="0" from="AF" hmode="route" pitch="0" throttle="0.0" vmode="throttle" wp="TD"/>
+      <attitude pitch="30" roll="0.0" throttle="0.0" until="FALSE" vmode="throttle"/>
+    </block>
+    <block name="Land Left AF (l)-TD (l)" strip_button="Land left (wp AF (l)-TD (l))">
+      <set value="-DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
+      <deroute block="landl"/>
+    </block>
+    <block name="landl">
+      <call fun="nav_compute_baseleg(WP_AFL, WP_TDL, WP_BASELEG, nav_radius)"/>
+      <circle radius="nav_radius" until="NavCircleCount() > 0.5" wp="BASELEG"/>
+      <set value="V_CTL_AUTO_THROTTLE_MIN_CRUISE_THROTTLE" var="v_ctl_auto_throttle_cruise_throttle"/>
+      <circle radius="nav_radius" until="NavQdrCloseTo(DegOfRad(baseleg_out_qdr)-10) && 10 > fabs(estimator_z - WaypointAlt(WP_BASELEG))" wp="BASELEG"/>
+    </block>
+    <block name="finall">
+      <exception cond="ground_alt + 10 > estimator_z" deroute="flarel"/>
+      <go from="AFL" hmode="route" vmode="glide" wp="TDL"/>
+    </block>
+    <block name="flarel">
+      <go approaching_time="0" from="AFL" hmode="route" pitch="stage_time*(30/4)" throttle="0.0" vmode="throttle" wp="TDL"/>
       <attitude pitch="30" roll="0.0" throttle="0.0" until="FALSE" vmode="throttle"/>
     </block>
     <block name="Land Left AF-TD (w)">
@@ -190,8 +210,10 @@
     </block>
     <block name="hoch fliegen">
       <exception cond="datalink_time > 22" deroute="Standby"/>
-      <exception cond="103>vsupply" deroute="Standby"/>
-      <circle radius="nav_radius" wp="STDBY"/>
+      <exception cond="107>vsupply" deroute="Standby"/>
+      <for from="0" to="100" var="i">
+        <circle alt="ground_alt+50+$i*5" radius="DEFAULT_CIRCLE_RADIUS" until="stage_time > 5" wp="1"/>
+      </for>
       <deroute block="Standby"/>
     </block>
   </blocks>

@@ -20,7 +20,8 @@
     
     <define name="USE_I2C0"/>
     <define name="USE_AIRSPEED"/>
-    <define name="USE_BARO_ETS"/>
+    <!--define name="USE_BARO_ETS"/-->
+    <!--define name="USE_BARO_BMP"/-->
     <define name="SENSOR_SYNC_SEND"/>
 
     <define name="SET_IMU_ZERO_ON_STARTUP"/>
@@ -65,18 +66,18 @@
 
   <modules>
    <!--load name="baro_scp.xml"/-->
-   <!--load name="humid_sht.xml"/-->
-   <load name="baro_ets.xml"/>
+   <load name="humid_sht.xml"/>
+   <!--load name="baro_ets.xml"/-->
    <load name="airspeed_ets.xml"/>
-   <load name="baro_bmp.xml"/>
+   <!--load name="baro_bmp.xml"/-->
    <load name="openlog.xml"/>
   </modules>
 
 <!-- commands section -->
   <servos>
     <servo name="MOTOR" no="7" min="1000" neutral="1000" max="2000"/>
-    <servo name="AILEVON_LEFT" no="4" max="1800" neutral="1500" min="1200"/>
-    <servo name="AILEVON_RIGHT" no="3" max="1200" neutral="1500" min="1800"/>
+    <servo name="AILEVON_LEFT" no="4" max="1800" neutral="1510" min="1200"/>
+    <servo name="AILEVON_RIGHT" no="3" max="1200" neutral="1490" min="1800"/>
   </servos>
 
   <commands>

@@ -13,15 +13,9 @@
     <target name="ap" board="tiny_1.1">
       <define name="DASH_TRIM"/>
       <define name="ALT_KALMAN"/>
-
-      <define name="USE_I2C0"/>
-      <define name="MEASURE_AIRSPEED"/>
-      <define name="SENSOR_SYNC_SEND"/>
-
       <define name="AGR_CLIMB"/>
+      <define name="SENSOR_SYNC_SEND"/>
       <define name="SET_IMU_ZERO_ON_STARTUP"/>
-
-
       <!--has to be set if SET_IMU_ZERO ON STARTUP IS SET-->
       <!--this is the ADC-Value, measured for the Z-Accelelerometer if the Plane is standing -->
       <define name="ACCEL_Z_GRAVITY" value="96"/>
@@ -48,8 +42,6 @@
     </subsystem>
     <subsystem name="gps" type="ublox_lea4p"/>
     <subsystem name="navigation"/>
-    <!-- Interfaces -->
-    <subsystem name="i2c"/>
   </firmware>
 
   <firmware name="setup">
@@ -57,18 +49,11 @@
     <target name="setup_actuators" board="twog_1.0"/>
   </firmware>
 
-  <modules>
-   <!--load name="baro_scp.xml"/-->
-   <load name="airspeed_ets.xml"/>
-   <load name="baro_bmp.xml"/>
-   <!--load name="humid_sht_i2c.xml"/-->
-  </modules>
-
   <!-- Aktoren und Achsenzurodnungen -->
   <servos>
     <servo name="THROTTLE" no="1" min="1500" neutral="1500" max="2000"/>
     <servo name="AILERON" no="0" max="1300" neutral="1500" min="1700"/>
-    <servo name="ELEVATOR" no="3" max="1700" neutral="1420" min="1300"/>
+    <servo name="ELEVATOR" no="3" max="1700" neutral="1445" min="1300"/>
     <servo name="KLAPPE" no="2" max="1150" neutral="1150" min="1700"/>
   </servos>
 
@@ -115,7 +100,7 @@
     <define name="GYRO_Q_SIGN" value="1"/>
     <define name="GYRO_R_SIGN" value="-1"/>
 
-    <define name="ACCEL_X_SENS" value="90.0" integer="16"/>
+    <define name="ACCEL_X_SENS" value="111.0" integer="16"/>
     <define name="ACCEL_Y_SENS" value="119.0" integer="16"/>
     <define name="ACCEL_Z_SENS" value="104.0" integer="16"/>
 
@@ -176,19 +161,19 @@
   <section name="VERTICAL CONTROL" prefix="V_CTL_">
     <define name="POWER_CTL_BAT_NOMINAL" value="11.1" unit="volt"/>
     <!-- outer loop proportional gain -->
-    <define name="ALTITUDE_PGAIN" value="-0.0509999990463"/>
+    <define name="ALTITUDE_PGAIN" value="-0.0299999993294"/>
     <!-- outer loop saturation -->
     <define name="ALTITUDE_MAX_CLIMB" value="2."/>
     <!-- auto throttle inner loop -->
-    <define name="AUTO_THROTTLE_NOMINAL_CRUISE_THROTTLE" value="0.5"/>
+    <define name="AUTO_THROTTLE_NOMINAL_CRUISE_THROTTLE" value="1."/>
     <define name="AUTO_THROTTLE_MIN_CRUISE_THROTTLE" value="0.50"/>
     <define name="AUTO_THROTTLE_MAX_CRUISE_THROTTLE" value="1.00"/>
     <define name="AUTO_THROTTLE_LOITER_TRIM" value="1500"/>
     <define name="AUTO_THROTTLE_DASH_TRIM" value="-500"/>
-    <define name="AUTO_THROTTLE_CLIMB_THROTTLE_INCREMENT" value="0." unit="%/(m/s)"/>
-    <define name="AUTO_THROTTLE_PGAIN" value="0."/>
-    <define name="AUTO_THROTTLE_IGAIN" value="0."/>
-    <define name="AUTO_THROTTLE_PITCH_OF_VZ_PGAIN" value="0.0750000029802"/>
+    <define name="AUTO_THROTTLE_CLIMB_THROTTLE_INCREMENT" value="0.15" unit="%/(m/s)"/>
+    <define name="AUTO_THROTTLE_PGAIN" value="0.00499999988824"/>
+    <define name="AUTO_THROTTLE_IGAIN" value="0.432999998331"/>
+    <define name="AUTO_THROTTLE_PITCH_OF_VZ_PGAIN" value="0.05"/>
     <!-- auto pitch inner loop -->
     <define name="AUTO_PITCH_PGAIN" value="-0.0379999987781"/>
     <define name="AUTO_PITCH_IGAIN" value="0.075"/>
@@ -197,19 +182,18 @@
    <define name="THROTTLE_SLEW" value="0.05"/>
   </section>
 
-  <!-- Einstellungen für Horizontale Flugregelung -->
+  <!-- Einstellungen für Horzontale Flugregelung -->
   <section name="HORIZONTAL CONTROL" prefix="H_CTL_">
-    <define name="COURSE_PGAIN" value="-0.787999987602"/>
-    <define name="COURSE_PRE_BANK" value="0.0"/>
-    <define name="AILERON_OF_THROTTLE" value="0.0"/>
+    <define name="COURSE_PGAIN" value="-1.18200004101"/>
+    <define name="COURSE_DGAIN" value="0.5"/>
     <define name="ROLL_MAX_SETPOINT" value="0.7" unit="radians"/>
     <define name="PITCH_MAX_SETPOINT" value="0.5" unit="radians"/>
     <define name="PITCH_MIN_SETPOINT" value="-0.5" unit="radians"/>
-    <define name="ROLL_PGAIN" value="6600."/>
+    <define name="ROLL_PGAIN" value="8000."/>
     <define name="AILERON_OF_THROTTLE" value="0.0"/>
     <define name="PITCH_PGAIN" value="-9000."/>
     <define name="PITCH_DGAIN" value="1.5"/>
-    <define name="ELEVATOR_OF_ROLL" value="3207.54711914"/>
+    <define name="ELEVATOR_OF_ROLL" value="4544.77587891"/>
   </section>
 
 
@@ -232,7 +216,7 @@
     <define name="BLEND_END" value="10"/><!-- Altitude Error to Blend Aggressive to Regular Climb Modes  CANNOT BE ZERO!!-->
     <define name="CLIMB_THROTTLE" value="0.8"/><!-- Gaz for Aggressive Climb -->
     <define name="CLIMB_PITCH" value="0.3"/><!-- Pitch for Aggressive Climb -->
-    <define name="DESCENT_THROTTLE" value="0.3"/><!-- Gaz for Aggressive Decent -->
+    <define name="DESCENT_THROTTLE" value="0.1"/><!-- Gaz for Aggressive Decent -->
     <define name="DESCENT_PITCH" value="-0.25"/><!-- Pitch for Aggressive Decent -->
     <define name="CLIMB_NAV_RATIO" value="0.8"/><!-- Percent Navigation for Altitude Error Equal to Start Altitude -->
     <define name="DESCENT_NAV_RATIO" value="1.0"/>
@@ -241,7 +225,7 @@
   <!-- Einstellungen für Notfallnavigation (wenn Flieger weggeflogen ist oder was schief gegangen ist) -->
   <section name="FAILSAFE" prefix="FAILSAFE_">
     <define name="DELAY_WITHOUT_GPS" value="3" unit="s"/>
-    <define name="DEFAULT_THROTTLE" value="0.7" unit="%"/>
+    <define name="DEFAULT_THROTTLE" value="0.4" unit="%"/>
     <define name="DEFAULT_ROLL" value="RadOfDeg(15)" unit="rad"/>
     <define name="DEFAULT_PITCH" value="RadOfDeg(0)" unit="rad"/>
     <define name="HOME_RADIUS" value="90" unit="m"/>

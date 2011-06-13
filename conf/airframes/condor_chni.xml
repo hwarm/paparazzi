@@ -35,12 +35,14 @@
     <load name="humid_sht.xml"/>
     <load name="baro_MS5534A.xml"/>
     <load name="baro_scp_i2c.xml"/-->
+   <load name="openlog.xml"/>
+   <load name="baro_ets.xml"/>
   </modules>
 
   <servos>
     <servo name="THROTTLE" no="7" min="1200" neutral="1200" max="2000"/>
     <servo name="AILERON" no="4" max="2000" neutral="1500" min="1000"/>
-    <servo name="ELEVATOR" no="3" max="2000" neutral="1500" min="1000"/>
+    <servo name="ELEVATOR" no="3" max="2000" neutral="1466" min="1000"/>
     <servo name="CAM" no="2" max="2000" neutral="1500" min="1000"/>
     <servo name="TILT" no="6" max="2000" neutral="1501" min="1000"/>
   </servos>
@@ -231,6 +233,7 @@
       <define name="USE_I2C0"/>
       <define name="SENSOR_SYNC_SEND"/>
       <define name="SET_IMU_ZERO_ON_STARTUP"/>
+      <define name="USE_BARO_ETS"/>
       <!--has to be set if SET_IMU_ZERO ON STARTUP IS SET-->
       <!--this is the ADC-Value, measured for the Z-Accelelerometer if the Plane is standing -->
       <define name="ACCEL_Z_GRAVITY" value="96"/>
