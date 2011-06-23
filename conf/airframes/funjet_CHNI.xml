@@ -68,8 +68,9 @@
    <!--load name="baro_scp.xml"/-->
    <load name="humid_sht.xml"/>
    <!--load name="baro_ets.xml"/-->
-   <load name="airspeed_ets.xml"/>
-   <!--load name="baro_bmp.xml"/-->
+   <!--load name="airspeed_ets.xml"/-->
+   <load name="temp_temod.xml"/>
+   <load name="baro_bmp.xml"/>
    <load name="openlog.xml"/>
   </modules>
 

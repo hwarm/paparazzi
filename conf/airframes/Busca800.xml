@@ -18,9 +18,11 @@
       <define name="USE_AIRSPEED"/>
       <define name="USE_BARO_BMP"/>
       <define name="SENSOR_SYNC_SEND"/>
-
       <define name="AGR_CLIMB"/>
       <define name="SET_IMU_ZERO_ON_STARTUP"/>
+  <!-- Andere Daten und Clock Pins im Vergleich zu Tiny 2.11 und TWOG für SHT -->
+      <define name="SCK_PIN" value="22"/>
+      <define name="DAT_PIN" value="25"/>
 
 
       <!--has to be set if SET_IMU_ZERO ON STARTUP IS SET-->
@@ -62,7 +64,7 @@
    <!--load name="baro_scp.xml"/-->
    <load name="airspeed_ets.xml"/>
    <!--load name="baro_bmp.xml"/-->
-   <!--load name="humid_sht.xml"/-->
+   <load name="humid_sht.xml"/>
   </modules>
 
   <!-- Aktoren und Achsenzurodnungen -->
