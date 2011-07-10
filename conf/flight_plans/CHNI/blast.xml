@@ -1,6 +1,6 @@
 <!DOCTYPE flight_plan SYSTEM "flight_plan.dtd">
 
-<flight_plan alt="50" ground_alt="9" lat0="43.12838" lon0="0.36694" max_dist_from_home="500" name="Stieglitz Versatile" qfu="270" security_height="600">
+<flight_plan alt="50" ground_alt="605" lat0="43.12838" lon0="0.36694" max_dist_from_home="500" name="BLLAST Field" qfu="270" security_height="80">
   <header>
 	#include "datalink.h"
 </header>

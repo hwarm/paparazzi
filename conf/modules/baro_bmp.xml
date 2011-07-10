@@ -11,7 +11,7 @@
     <file name="baro_bmp.h"/>
   </header>
   <init fun="baro_bmp_init()"/>
-  <periodic fun="baro_bmp_periodic()" freq="8"/>
+  <periodic fun="baro_bmp_periodic()" freq="20"/>
   <event fun="baro_bmp_event()"/>
   <makefile target="ap">
     <file name="baro_bmp.c"/>

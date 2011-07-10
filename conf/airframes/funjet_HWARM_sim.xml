@@ -19,9 +19,7 @@
     <define name="ALT_KALMAN"/>
     
     <define name="USE_I2C0"/>
-    <define name="USE_AIRSPEED"/>
-    <!--define name="USE_BARO_ETS"/-->
-    <!--define name="USE_BARO_BMP"/-->
+    <!--define name="USE_AIRSPEED"/-->
     <define name="SENSOR_SYNC_SEND"/>
 
     <define name="SET_IMU_ZERO_ON_STARTUP"/>
@@ -41,7 +39,7 @@
     <subsystem name="control"/>
     <!-- Sensors -->
     <subsystem name="attitude" type="dcm"/>
-    <subsystem name="gps" type="ublox_lea5h"/>
+    <subsystem name="gps" type="ublox_lea4p"/>
 
     <subsystem name="navigation"/>
     
@@ -51,7 +49,7 @@
       <configure name="GYRO_R" value="ADC_2"/>
       <configure name="ACCEL_X" value="ADC_6"/>
       <configure name="ACCEL_Y" value="ADC_5"/>
-      <configure name="ACCEL_Z" value="ADC_7"/>
+      <configure name="ACCEL_Z" value="ADC_3"/>
     </subsystem>
     
     <subsystem name="i2c"/>
@@ -66,42 +64,34 @@
 
   <modules>
    <!--load name="baro_scp.xml"/-->
-   <load name="humid_sht.xml"/>
-   <!--load name="baro_ets.xml"/-->
-   <load name="airspeed_ets.xml"/>
-   <!--load name="temp_temod.xml"/-->
+   <!--load name="airspeed_ets.xml"/>
    <load name="baro_bmp.xml"/>
-   <load name="openlog.xml"/>
+   <load name="humid_sht.xml"/>
+   <load name="openlog.xml"/-->
   </modules>
 
 <!-- commands section -->
   <servos>
     <servo name="MOTOR" no="7" min="1000" neutral="1000" max="2000"/>
-    <servo name="AILEVON_LEFT" no="4" max="1800" neutral="1510" min="1200"/>
-    <servo name="AILEVON_RIGHT" no="3" max="1200" neutral="1490" min="1800"/>
-    <servo name="CAM" no="2" max="2000" neutral="1500" min="1000"/>
+    <servo name="AILEVON_LEFT" no="4" max="1800" neutral="1524" min="1200"/>
+    <servo name="AILEVON_RIGHT" no="3" min="1800" neutral="1470" max="1200"/>
+    <!--servo name="AILEVON_RIGHT" no="4" max="1200" neutral="1500" min="1800"/-->
   </servos>
 
   <commands>
     <axis name="THROTTLE" failsafe_value="0"/>
     <axis name="ROLL" failsafe_value="0"/>
     <axis name="PITCH" failsafe_value="0"/>
-    <axis name="CAM" failsafe_value="0"/>
   </commands>
 
   <rc_commands>
     <set command="THROTTLE" value="@THROTTLE"/>
     <set command="ROLL" value="@ROLL"/>
     <set command="PITCH" value="@PITCH"/>
-    <set command="CAM" value="@CAM"/>	
   </rc_commands>
 
-  <auto_rc_commands>
-    <set command="CAM" value="@CAM"/>	
-  </auto_rc_commands>
-
   <section name="MIXER">
-    <define name="AILEVON_AILERON_RATE" value="0.45"/>
+    <define name="AILEVON_AILERON_RATE" value="-0.45"/>
     <define name="AILEVON_ELEVATOR_RATE" value="0.8"/>
   </section>
 
@@ -111,7 +101,6 @@
     <set servo="MOTOR" value="@THROTTLE"/>
     <set servo="AILEVON_LEFT" value="$elevator + $aileron"/>
     <set servo="AILEVON_RIGHT" value="$elevator - $aileron"/>
-    <set servo="CAM" value="@CAM"/>	
   </command_laws>
 
   <section name="AUTO1" prefix="AUTO1_">
@@ -280,15 +269,9 @@
 
   <makefile location="after">            
       ap.CFLAGS += -DWIND_INFO -DSTRONG_WIND
+      ap.CFLAGS += -DUSE_I2C0 -DBARO_BMP_ACCEL
 
       sim.CFLAGS += -DWIND_INFO -DSTRONG_WIND
-
-      #ap.srcs += subsystems/navigation/traffic_info.c
-      ap.CFLAGS += -DTRAFFIC_INFO
-
-      #sim.srcs += subsystems/navigation/traffic_info.c
-      sim.CFLAGS += -DTRAFFIC_INFO
-
   </makefile>
 
 </airframe>

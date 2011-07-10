@@ -6,7 +6,7 @@
      wi.232 Radiomodems
 -->
 
-<airframe name="Busca">
+<airframe name="MK_Henry">
 
   <!-- Definition welche HW mit welcher SW zusammenhängt und grundsätzliche Defines -->
   <firmware name="fixedwing">
@@ -15,14 +15,17 @@
       <define name="ALT_KALMAN"/>
 
       <define name="USE_I2C0"/>
-      <define name="USE_AIRSPEED"/>
-      <!--define name="USE_BARO_BMP"/-->
+      <!--define name="USE_AIRSPEED"/-->
+      <define name="USE_BARO_BMP"/>
       <define name="SENSOR_SYNC_SEND"/>
+
       <define name="AGR_CLIMB"/>
       <define name="SET_IMU_ZERO_ON_STARTUP"/>
-  <!-- Andere Daten und Clock Pins im Vergleich zu Tiny 2.11 und TWOG für SHT -->
+
+ <!-- Andere Daten und Clock Pins im Vergleich zu Tiny 2.11 und TWOG für SHT -->
       <define name="SCK_PIN" value="22"/>
       <define name="DAT_PIN" value="25"/>
+
 
 
       <!--has to be set if SET_IMU_ZERO ON STARTUP IS SET-->
@@ -47,7 +50,7 @@
       <configure name="GYRO_R" value="ADC_2"/><!-- Yaw -->
       <configure name="ACCEL_X" value="ADC_5"/>
       <configure name="ACCEL_Y" value="ADC_6"/>
-      <configure name="ACCEL_Z" value="ADC_3"/>
+      <configure name="ACCEL_Z" value="ADC_7"/>
     </subsystem>
     <subsystem name="gps" type="ublox_lea4p"/>
     <subsystem name="navigation"/>
@@ -56,24 +59,23 @@
   </firmware>
 
   <firmware name="setup">
-    <target name="tunnel" board="tiny_1.1"/>
-    <target name="setup_actuators" board="tiny_1.1"/>
+    <target name="tunnel" board="twog_1.0"/>
+    <target name="setup_actuators" board="twog_1.0"/>
   </firmware>
 
   <modules>
    <!--load name="baro_scp.xml"/-->
-   <load name="airspeed_ets.xml"/>
+   <!--load name="airspeed_ets.xml"/-->
    <load name="baro_bmp.xml"/>
    <load name="humid_sht.xml"/>
-   <load name="openlog.xml"/>
   </modules>
 
   <!-- Aktoren und Achsenzurodnungen -->
   <servos>
     <servo name="THROTTLE" no="1" min="1500" neutral="1500" max="2000"/>
-    <servo name="AILERON_L" no="0" max="1300" neutral="1491" min="1700"/>
-    <servo name="ELEVATOR" no="3" max="1700" neutral="1335" min="1200"/>
-    <servo name="AILERON_R" no="6" max="1300" neutral="1491" min="1700"/>
+    <servo name="AILERON_L" no="0" max="1300" neutral="1488" min="1700"/>
+    <servo name="ELEVATOR" no="3" max="1700" neutral="1390" min="1200"/>
+    <servo name="AILERON_R" no="6" max="1300" neutral="1488" min="1700"/>
   </servos>
 
 

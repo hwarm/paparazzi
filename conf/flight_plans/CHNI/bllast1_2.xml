@@ -1,16 +1,16 @@
-<!DOCTYPE flight_plan SYSTEM "flight_plan.dtd">
+<!DOCTYPE flight_plan SYSTEM "../flight_plan.dtd">
 
-<flight_plan alt="50" ground_alt="9" lat0="43.12838" lon0="0.36694" max_dist_from_home="500" name="Stieglitz Versatile" qfu="270" security_height="600">
+<flight_plan alt="600" ground_alt="605" lat0="43.122088" lon0="0.364750" max_dist_from_home="500" name="BLLAST Field" qfu="270" security_height="85">
   <header>
 	#include "datalink.h"
 </header>
   <waypoints>
-    <waypoint name="HOME" x="-129.1" y="-2.2"/>
-    <waypoint alt="70.0" name="STDBY" x="-15.3" y="102.2"/>
-    <waypoint alt="70.0" name="1" x="-126.6" y="-44.1"/>
-    <waypoint alt="70.0" name="2" x="-56.8" y="81.4"/>
-    <waypoint name="BASELEG" x="26.9" y="-23.0"/>
-    <waypoint name="CLIMB" x="-61.9" y="39.1"/>
+    <waypoint name="HOME" x="-4.2" y="17.5"/>
+    <waypoint alt="700.0" name="STDBY" x="-53.6" y="-50.5"/>
+    <waypoint alt="700.0" name="1" x="-75.2" y="-57.7"/>
+    <waypoint alt="700.0" name="2" x="61.0" y="-10.7"/>
+    <waypoint name="BASELEG" x="-82.3" y="-222.9"/>
+    <waypoint alt="650.0" name="CLIMB" x="-58.5" y="-65.3"/>
   </waypoints>
   <sectors/>
   <exceptions/>
@@ -32,11 +32,25 @@
       <set value="0" var="kill_throttle"/>
       <go wp="CLIMB"/>
     </block>
+    <block name="hoch" strip_button="Hoch">
+      <exception cond="datalink_time > 22" deroute="Standby"/>
+      <circle alt="2200" radius="nav_radius" climb="3.2" until="(estimator_z > ground_alt+ 1600)" vmode="climb" wp="1"/>
+    </block>
+    <block name="runter" strip_button="Runter">
+      <exception cond="datalink_time > 22" deroute="Standby"/>
+      <circle alt="2200" radius="nav_radius" throttle="0" climb="-4" until="(ground_alt+ 100 > estimator_z)" vmode="climb" wp="1"/>
+    </block>
     <block name="Standby" strip_button="Standby" strip_icon="home.png">
-      <circle alt="65" radius="nav_radius" wp="STDBY"/>
+      <circle alt="710" radius="nav_radius" wp="STDBY"/>
+    </block>
+    <block name="F CHNI" strip_button="CHNI">
+      <follow ac_id="2" distance="10" height="50"/>
+    </block>
+    <block name="F HWARM" strip_button="HWARM">
+      <follow ac_id="65" distance="10" height="50"/>
     </block>
     <block name="roll 30 alt 50">
-      <attitude roll="0" alt="70"/>
+      <attitude alt="70" roll="0"/>
     </block>
     <block name="Figure 8 around wp 1" strip_button="Figure 8 (wp 1-2)" strip_icon="eight.png">
       <eight center="1" radius="nav_radius" turn_around="2"/>
